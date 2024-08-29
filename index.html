@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cordova-plugin-game-progress-manager Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: "Courier New", Courier, monospace;
+            background-color: #f9f9f9;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>cordova-plugin-game-progress-manager Documentation</h1>
+        
+        <h2>Overview</h2>
+        <p>
+            <strong>cordova-plugin-game-progress-manager</strong> is a Cordova plugin that allows game developers to easily export and import game progress using LocalStorage or IndexedDB. The plugin provides a user-friendly interface to save game progress to a file, export it, and import it back into the game. The plugin is specifically designed for Android platforms and is intended to simplify the process of managing game saves.
+        </p>
+        
+        <h2>Features</h2>
+        <ul>
+            <li>Automatically detects the autosave mechanism used by the game (LocalStorage or IndexedDB).</li>
+            <li>Allows game progress to be exported to a <code>.txt</code> file.</li>
+            <li>Supports importing game progress from a previously exported <code>.txt</code> file.</li>
+            <li>Provides functions to manually save and load progress using LocalStorage or IndexedDB.</li>
+            <li>Requires minimal permissions to interact with the file system on Android.</li>
+        </ul>
+        
+        <h2>Requirements</h2>
+        <ul>
+            <li>Cordova CLI 10.0.0 or higher</li>
+            <li>Android SDK</li>
+            <li>Plugman (recommended for plugin management)</li>
+        </ul>
+        
+        <h2>Installation</h2>
+        <h3>Using Cordova CLI</h3>
+        <p>You can install the plugin directly from the plugin repository using the Cordova CLI:</p>
+        <pre><code>cordova plugin add cordova-plugin-game-progress-manager</code></pre>
+        
+        <h3>Using Plugman</h3>
+        <p>If you prefer to use Plugman, follow these steps:</p>
+        <ol>
+            <li><strong>Create the Plugin Structure:</strong></li>
+            <p>Run the following command to create the plugin structure:</p>
+            <pre><code>plugman create --name cordova-plugin-game-progress-manager --plugin_id com.jafetegill.gameprogress --plugin_version 1.0.0</code></pre>
+            
+            <li><strong>Install the Plugin:</strong></li>
+            <p>After creating the plugin, install it into your Cordova project:</p>
+            <pre><code>plugman install --platform android --project /path/to/your/cordova/project --plugin /path/to/your/plugin</code></pre>
+        </ol>
+        
+        <h2>Usage</h2>
+        <h3>1. Detecting the Autosave Method</h3>
+        <p>Before exporting or importing game progress, it's important to detect which autosave method (LocalStorage or IndexedDB) your game is using. This can be done using the <code>detectAutosaveMethod</code> function.</p>
+        <pre><code>GameProgressManager.detectAutosaveMethod(function(result) {
+    console.log('Detected Autosave Method:', result.method);
+}, function(err) {
+    console.error('Failed to detect autosave method:', err);
+});</code></pre>
+        <p><strong>Result Example:</strong></p>
+        <pre><code>{
+    "method": "LocalStorage"
+}</code></pre>
+        
+        <h3>2. Exporting Game Progress</h3>
+        <p>Once the autosave method is detected, you can export the game progress to a <code>.txt</code> file. The game state will be automatically encoded in Base64 and saved to the specified file location.</p>
+        <pre><code>GameProgressManager.exportGameProgress(function() {
+    console.log('Game progress exported successfully');
+}, function(err) {
+    console.error('Failed to export game progress:', err);
+});</code></pre>
+        
+        <h3>3. Importing Game Progress</h3>
+        <p>To load game progress from a previously exported <code>.txt</code> file, use the <code>importGameProgress</code> function. This will decode the Base64 data and load the game state back into your app.</p>
+        <pre><code>GameProgressManager.importGameProgress(function(loadedGameState) {
+    var gameState = JSON.parse(loadedGameState);
+    console.log('Game progress loaded:', gameState);
+}, function(err) {
+    console.error('Failed to load game progress:', err);
+});</code></pre>
+        
+        <h3>4. Saving Progress to LocalStorage</h3>
+        <p>If your game uses LocalStorage, you can manually save the game state using the <code>saveProgressToLocalStorage</code> method.</p>
+        <pre><code>var gameState = { level: 10, score: 1500 };
+
+GameProgressManager.saveProgressToLocalStorage(gameState, function() {
+    console.log('Game progress saved to LocalStorage');
+}, function(err) {
+    console.error('Failed to save progress to LocalStorage:', err);
+});</code></pre>
+        
+        <h3>5. Loading Progress from LocalStorage</h3>
+        <p>To load the game state from LocalStorage, use the <code>loadProgressFromLocalStorage</code> method.</p>
+        <pre><code>GameProgressManager.loadProgressFromLocalStorage(function(loadedGameState) {
+    var gameState = JSON.parse(loadedGameState);
+    console.log('Game progress loaded from LocalStorage:', gameState);
+}, function(err) {
+    console.error('Failed to load progress from LocalStorage:', err);
+});</code></pre>
+        
+        <h3>6. Saving Progress to IndexedDB</h3>
+        <p>If your game uses IndexedDB, you can save the game state using the <code>saveProgressToIndexedDB</code> method.</p>
+        <pre><code>var gameState = { level: 10, score: 1500 };
+
+GameProgressManager.saveProgressToIndexedDB(gameState, function() {
+    console.log('Game progress saved to IndexedDB');
+}, function(err) {
+    console.error('Failed to save progress to IndexedDB:', err);
+});</code></pre>
+        
+        <h3>7. Loading Progress from IndexedDB</h3>
+        <p>To load the game state from IndexedDB, use the <code>loadProgressFromIndexedDB</code> method.</p>
+        <pre><code>GameProgressManager.loadProgressFromIndexedDB(function(loadedGameState) {
+    var gameState = JSON.parse(loadedGameState);
+    console.log('Game progress loaded from IndexedDB:', gameState);
+}, function(err) {
+    console.error('Failed to load progress from IndexedDB:', err);
+});</code></pre>
+        
+        <h2>Permissions</h2>
+        <p>The plugin requires the following permissions to interact with the Android file system:</p>
+        <pre><code>&lt;uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /&gt;
+&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /&gt;</code></pre>
+        <p>These permissions are automatically added to your app’s <code>AndroidManifest.xml</code> when you install the plugin.</p>
+        
+        <h2>Testing</h2>
+        <h3>Manual Testing</h3>
+        <ol>
+            <li><strong>Export Test:</strong></li>
+            <p>Run your app on an Android device. Use the export functionality to save the game progress to a <code>.txt</code> file. Verify the file is created and contains the encoded game state.</p>
+            
+            <li><strong>Import Test:</strong></li>
+            <p>Use the import functionality to load the game progress from the <code>.txt</code> file. Verify the game state is correctly restored.</p>
+            
+            <li><strong>LocalStorage & IndexedDB:</strong></li>
+            <p>Manually save and load game progress using the provided methods. Ensure the game state persists correctly across sessions.</p>
+        </ol>
+        
+        <h3>Automated Testing</h3>
+        <p>Consider writing unit tests and integration tests to automate testing of the plugin's functionality. Use tools like Jasmine, Mocha, or Jest for JavaScript testing.</p>
+        
+        <h2>Known Issues & Limitations</h2>
+        <ul>
+            <li>The plugin currently only supports Android platforms.</li>
+            <li>Detection of autosave methods is basic and may require customization for complex use cases.</li>
+            <li>The plugin does not yet support other storage mechanisms like WebSQL or custom game state storage solutions.</li>
+        </ul>
+        
+        <h2>Troubleshooting</h2>
+        <h3>Common Issues</h3>
+        <ul>
+            <li><strong>Permission Denied:</strong> Ensure your app has the necessary storage permissions.</li>
+            <li><strong>File Not Found:</strong> Verify the file path when importing game progress.</li>
+            <li><strong>Encoding Issues:</strong> Check that the game state is correctly encoded/decoded in Base64.</li>
+        </ul>
+        
+        <h3>Debugging</h3>
+        <ul>
+            <li>Use <code>console.log()</code> statements generously to trace the plugin’s operations.</li>
+            <li>Inspect the exported <code>.txt</code> files to verify the content.</li>
+            <li>Use Android Studio’s logcat to capture detailed logs from the plugin.</li>
+        </ul>
+        
+        <h2>Contributing</h2>
+        <p>Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request on the plugin's GitHub repository.</p>
+        
+        <h3>Contribution Guidelines</h3>
+        <ul>
+            <li>Fork the repository.</li>
+            <li>Create a new branch for your feature or bugfix.</li>
+            <li>Write clear, concise commit messages.</li>
+            <li>Ensure your code passes all existing tests.</li>
+            <li>Submit a pull request with a detailed description of your changes.</li>
+        </ul>
+        
+        <h2>Changelog</h2>
+        <h3>Version 1.0.0</h3>
+        <p>Initial release with support for detecting autosave methods, exporting and importing game progress, and saving/loading progress using LocalStorage and IndexedDB.</p>
+        
+        <h2>License</h2>
+        <p>This plugin is licensed under the MIT License. You are free to use, modify, and distribute it as you see fit.</p>
+        
+        <h2>Contact</h2>
+        <p>For support, please contact the plugin maintainer via email: <a href="mailto:jafetegill@example.com">jafetegill@example.com</a> (replace with your actual contact).</p>
+    </div>
+</body>
+</html>
